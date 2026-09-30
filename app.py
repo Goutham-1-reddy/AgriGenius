@@ -60,15 +60,13 @@ if os.path.exists(VECTOR_STORE_PATH):
     db = Chroma(persist_directory=VECTOR_STORE_PATH, embedding_function=embedding_function)
     print("Vector store loaded from cache!")
 else:
-    # Build vector store from scratch (slow, first time only)
-    urls = ["https://mospi.gov.in/4-agricultural-statistics"]
+   urls = ["https://mospi.gov.in/4-agricultural-statistics"]
 
 website_contents = [fetch_website_content(url) for url in urls]
 all_contents = website_contents
 
 from chat1 import initialize_vector_store_persistent
 db = initialize_vector_store_persistent(all_contents, VECTOR_STORE_PATH)
-all_contents = website_contents
     
     from chat1 import initialize_vector_store_persistent
     db = initialize_vector_store_persistent(all_contents, VECTOR_STORE_PATH)
