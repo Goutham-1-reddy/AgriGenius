@@ -63,11 +63,10 @@ else:
     # Build vector store from scratch (slow, first time only)
     print("Building vector store (this will take a few minutes on first run)...")
     urls = ["https://mospi.gov.in/4-agricultural-statistics"]
-    pdf_files = ["Data/Farming Schemes.pdf", "Data/farmerbook.pdf"]
-    
-    website_contents = [fetch_website_content(url) for url in urls]
-    pdf_texts = [extract_pdf_text(pdf_file) for pdf_file in pdf_files]
-    all_contents = website_contents + pdf_texts
+
+website_contents = [fetch_website_content(url) for url in urls]
+
+all_contents = website_contents
     
     from chat1 import initialize_vector_store_persistent
     db = initialize_vector_store_persistent(all_contents, VECTOR_STORE_PATH)
