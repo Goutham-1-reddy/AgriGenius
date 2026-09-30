@@ -58,20 +58,39 @@ if os.path.exists(VECTOR_STORE_PATH):
     from langchain_community.vectorstores import Chroma
     embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
     db = Chroma(persist_directory=VECTOR_STORE_PATH, embedding_function=embedding_function)
+    # Check if vector store already exists
+VECTOR_STORE_PATH = "chroma_db"
+
+if os.path.exists(VECTOR_STORE_PATH):
+    # Load existing vector store (fast)
+    print("Loading cached vector store...")
+    from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+    from langchain_community.vectorstores import Chroma
+
+    embedding_function = SentenceTransformerEmbeddings(
+        model_name="all-MiniLM-L6-v2"
+    )
+
+    db = Chroma(
+        persist_directory=VECTOR_STORE_PATH,
+        embedding_function=embedding_function
+    )
+
     print("Vector store loaded from cache!")
+
 else:
-   urls = ["https://mospi.gov.in/4-agricultural-statistics"]
+    # Build vector store using website content
+    urls = ["https://mospi.gov.in/4-agricultural-statistics"]
 
-website_contents = [fetch_website_content(url) for url in urls]
-all_contents = website_contents
+    website_contents = [
+        fetch_website_content(url) for url in urls
+    ]
 
-from chat1 import initialize_vector_store_persistent
-db = initialize_vector_store_persistent(all_contents, VECTOR_STORE_PATH)
-    
-    from chat1 import initialize_vector_store_persistent
-    db = initialize_vector_store_persistent(all_contents, VECTOR_STORE_PATH)
+    all_contents = website_contents
+
+    db = initialize_vector_store(all_contents)
+
     print("Vector store built and cached!")
-
 chat_chain = setup_retrieval_qa(db)
 sustainability_chain = setup_sustainability_qa(db)
 
